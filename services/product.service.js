@@ -9,7 +9,7 @@ class ProductsService {
 
   generate() {
     const limit = 100;
-    
+
     for (let index = 0; index < limit; index++) {
       this.products.push({
         id: faker.datatype.uuid(),
@@ -20,8 +20,14 @@ class ProductsService {
     }
   }
 
-  create() {
+  create(data) {
+    const newProduct = {
+      id: faker.datatype.uuid(),
+      ...data
+    }
+    this.products.push(newProduct);
 
+    return newProduct;
   }
 
   find() {
@@ -32,12 +38,31 @@ class ProductsService {
     return this.products.find(item => item.id === id);
   }
 
-  update() {
+  update(id, changes) {
+    const index = this.products.findIndex(item => item.id === id);
+    if (index === -1){
+      throw new Error('product not found');
+    }
 
+    const product = this.products[index];
+    this.products[index] = {
+      ...product,
+      ...changes
+    };
+
+    return this.products[index];
   }
 
-  delete() {
+  delete(id) {
+    const index = this.products.findIndex(item => item.id === id);
+    if (index === -1){
+      throw new Error('product not found');
+    }
+    // .splice allows me to receive a position and indicate how many elements to remove from it.
+    this.products.splice(index, 1);
 
+    // Some APIs give a success message or id.
+    return { id };
   }
 
 }
