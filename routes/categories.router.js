@@ -8,16 +8,14 @@ router.get('/', async (req, res) => {
   res.json(categories);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     const categorie = await service.findOne(id);
 
     res.status(200).json(categorie);
   } catch (error) {
-    res.status(404).json({
-      message: error.message
-    });
+    next(error);
   }
 });
 
@@ -36,7 +34,7 @@ router.post('/', async (req, res) => {
   res.status(201).json(newCategory);
 });
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     const body = req.body;
@@ -44,22 +42,18 @@ router.patch('/:id', async (req, res) => {
 
     res.json(category);
   } catch (error) {
-    res.status(404).json({
-      message: error.message
-    });
+    next(error);
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
     const answer = await service.delete(id);
 
     res.json(answer);
   } catch (error) {
-    res.status(404).json({
-      message: error.message
-    });
+    next(error);
   }
 });
 
