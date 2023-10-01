@@ -18,7 +18,7 @@ class UsersService {
     }
   }
 
-  create(data) {
+  async create(data) {
     const newUser = {
       id: faker.datatype.uuid(),
       ...data
@@ -28,15 +28,24 @@ class UsersService {
     return newUser;
   }
 
-  find() {
-    return this.users;
+  async find() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(this.users);
+      }, 5000);
+    });
   }
 
-  findOne(id) {
-    return this.users.find(item => item.id === id);
+  async findOne(id) {
+    const user = this.users.find(item => item.id === id);
+    
+    if (user === undefined)
+      throw new Error('user not found');
+
+    return user;
   }
 
-  update(id, changes) {
+  async update(id, changes) {
     const index = this.users.findIndex(item => item.id === id);
     if (index === -1){
       throw new Error('user not found');
@@ -51,11 +60,11 @@ class UsersService {
     return this.users[index];
   }
 
-  delete(id) {
+  async delete(id) {
     const index = this.users.findIndex(item => item.id === id);
-    if (index === -1){
+    if (index === -1)
       throw new Error('user not found');
-    }
+
     // .splice allows me to receive a position and indicate how many elements to remove from it.
     this.users.splice(index, 1);
 

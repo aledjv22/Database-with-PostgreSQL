@@ -19,7 +19,7 @@ class CategoriesService {
     }
   }
 
-  create(data) {
+  async create(data) {
     const newCategory = {
       id: faker.datatype.uuid(),
       ...data
@@ -29,20 +29,28 @@ class CategoriesService {
     return newCategory;
   }
 
-  find() {
-    return this.categories;
+  async find() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(this.categories);
+      }, 5000);
+    });
   }
 
-  findOne(id) {
-    return this.categories.find(item => item.id === id);
+  async findOne(id) {
+    const category = this.categories.find(item => item.id === id);
+
+    if (category === undefined)
+      throw new Error('user not found');
+
+    return category;
   }
 
-  update(id, changes) {
+  async update(id, changes) {
     const index = this.categories.findIndex(item => item.id === id);
-    if (index === -1){
+    if (index === -1)
       throw new Error('category not found');
-    }
-
+    
     const category = this.categories[index];
     this.categories[index] = {
       ...category,
@@ -52,11 +60,11 @@ class CategoriesService {
     return this.categories[index];
   }
 
-  delete(id) {
+  async delete(id) {
     const index = this.categories.findIndex(item => item.id === id);
-    if (index === -1){
+    if (index === -1)
       throw new Error('category not found');
-    }
+    
     // .splice allows me to receive a position and indicate how many elements to remove from it.
     this.categories.splice(index, 1);
 

@@ -3,16 +3,22 @@ const CategoriesService = require('../services/category.service');
 const router = express.Router();
 const service = new CategoriesService();
 
-router.get('/', (req, res) => {
-  const categories = service.find()
+router.get('/', async (req, res) => {
+  const categories = await service.find()
   res.json(categories);
 });
 
-router.get('/:id', (req, res) => {
-  const { id } = req.params;
-  const categorie = service.findOne(id);
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const categorie = await service.findOne(id);
 
-  res.status(200).json(categorie);
+    res.status(200).json(categorie);
+  } catch (error) {
+    res.status(404).json({
+      message: error.message
+    });
+  }
 });
 
 router.get('/:categoryId/:products/:productId', (req, res) =>{
@@ -23,26 +29,38 @@ router.get('/:categoryId/:products/:productId', (req, res) =>{
   });
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const body = req.body;
-  const newCategory = service.create(body);
+  const newCategory = await service.create(body);
 
   res.status(201).json(newCategory);
 });
 
-router.patch('/:id', (req, res) => {
-  const { id } = req.params;
-  const body = req.body;
-  const category = service.update(id, body);
+router.patch('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const body = req.body;
+    const category = await service.update(id, body);
 
-  res.json(category);
+    res.json(category);
+  } catch (error) {
+    res.status(404).json({
+      message: error.message
+    });
+  }
 });
 
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  const answer = service.delete(id);
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const answer = await service.delete(id);
 
-  res.json(answer);
+    res.json(answer);
+  } catch (error) {
+    res.status(404).json({
+      message: error.message
+    });
+  }
 });
 
 module.exports = router;
