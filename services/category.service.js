@@ -1,4 +1,5 @@
 const { faker } = require('@faker-js/faker');
+const boom = require('@hapi/boom');
 
 class CategoriesService {
 
@@ -13,7 +14,8 @@ class CategoriesService {
     for (let index = 0; index < limit; index++) {
       this.categories.push({
         id: faker.datatype.uuid(),
-        categorie: faker.word.adjective()
+        categorie: faker.word.adjective(),
+        isBlock: faker.datatype.boolean(),
       }
       );
     }
@@ -33,15 +35,18 @@ class CategoriesService {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve(this.categories);
-      }, 5000);
+      }, 2000);
     });
   }
 
   async findOne(id) {
     const category = this.categories.find(item => item.id === id);
 
-    if (category === undefined)
-      throw new Error('user not found');
+    if (!category)
+      throw boom.notFound('category not found');
+
+    if (category.isBlock)
+      throw boom.conflict('category is block');
 
     return category;
   }
@@ -49,7 +54,7 @@ class CategoriesService {
   async update(id, changes) {
     const index = this.categories.findIndex(item => item.id === id);
     if (index === -1)
-      throw new Error('category not found');
+      throw boom.notFound('category not found');
     
     const category = this.categories[index];
     this.categories[index] = {
@@ -63,7 +68,7 @@ class CategoriesService {
   async delete(id) {
     const index = this.categories.findIndex(item => item.id === id);
     if (index === -1)
-      throw new Error('category not found');
+      throw boom.notFound('category not found');
     
     // .splice allows me to receive a position and indicate how many elements to remove from it.
     this.categories.splice(index, 1);

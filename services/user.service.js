@@ -1,4 +1,5 @@
 const { faker } = require('@faker-js/faker');
+const boom = require('@hapi/boom');
 
 class UsersService {
 
@@ -14,6 +15,7 @@ class UsersService {
       this.users.push({
         id: faker.datatype.uuid(),
         user: faker.internet.userName(),
+        isBlock: faker.datatype.boolean(),
       });
     }
   }
@@ -32,15 +34,18 @@ class UsersService {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve(this.users);
-      }, 5000);
+      }, 2000);
     });
   }
 
   async findOne(id) {
     const user = this.users.find(item => item.id === id);
     
-    if (user === undefined)
-      throw new Error('user not found');
+    if (!user)
+      throw boom.notFound('user not found');
+    
+    if (user.isBlock)
+      throw boom.conflict('user is block');
 
     return user;
   }
@@ -48,7 +53,7 @@ class UsersService {
   async update(id, changes) {
     const index = this.users.findIndex(item => item.id === id);
     if (index === -1){
-      throw new Error('user not found');
+      throw boom.notFound('user not found');
     }
 
     const user = this.users[index];
@@ -63,7 +68,7 @@ class UsersService {
   async delete(id) {
     const index = this.users.findIndex(item => item.id === id);
     if (index === -1)
-      throw new Error('user not found');
+      throw boom.notFound('user not found');
 
     // .splice allows me to receive a position and indicate how many elements to remove from it.
     this.users.splice(index, 1);
