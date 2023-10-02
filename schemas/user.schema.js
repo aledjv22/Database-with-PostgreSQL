@@ -1,14 +1,17 @@
 const Joi = require('joi');
 
 const id = Joi.string().uuid();
-const name = Joi.string().alphanum().min(3).max(15);
+const user = Joi.string().min(3).max(15);
+const isBlock = Joi.boolean();
 
 const createUserSchema = Joi.object({
-  name: name.required(),
+  user: user.required(),
+  isBlock: isBlock.required(),
 });
 
 const updateUserSchema = Joi.object({
-  name: name,
+  user: user,
+  isBlock: isBlock,
 });
 
 const getUserSchema = Joi.object({
@@ -19,4 +22,4 @@ const deleteUserSchema = Joi.object({
   id: id.required(),
 });
 
-module.exports = { createUserSchema, updateUserSchema, getUserSchema, deleteUserSchema}
+module.exports = { createUserSchema, updateUserSchema, getUserSchema, deleteUserSchema }
