@@ -1,82 +1,34 @@
-const { faker } = require('@faker-js/faker');
 const boom = require('@hapi/boom');
 
-class UsersService {
+const getConnection = require('../libs/postgres');
 
-  constructor(){
-    this.users = [];
-    this.generate();
-  }
-
-  generate() {
-    const limit = 100;
-
-    for (let index = 0; index < limit; index++) {
-      this.users.push({
-        id: faker.datatype.uuid(),
-        user: faker.internet.userName(),
-        isBlock: faker.datatype.boolean(),
-      });
-    }
-  }
+class UserService {
+  constructor() {}
 
   async create(data) {
-    const newUser = {
-      id: faker.datatype.uuid(),
-      ...data
-    }
-    this.users.push(newUser);
-
-    return newUser;
+    return data;
   }
 
   async find() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(this.users);
-      }, 2000);
-    });
+    const client =  await getConnection();
+    const rta = await client.query('SELECT * FROM tasks');
+    return rta.rows;
   }
 
   async findOne(id) {
-    const user = this.users.find(item => item.id === id);
-    
-    if (!user)
-      throw boom.notFound('user not found');
-    
-    if (user.isBlock)
-      throw boom.conflict('user is block');
-
-    return user;
-  }
-
-  async update(id, changes) {
-    const index = this.users.findIndex(item => item.id === id);
-    if (index === -1){
-      throw boom.notFound('user not found');
-    }
-
-    const user = this.users[index];
-    this.users[index] = {
-      ...user,
-      ...changes
-    };
-
-    return this.users[index];
-  }
-
-  async delete(id) {
-    const index = this.users.findIndex(item => item.id === id);
-    if (index === -1)
-      throw boom.notFound('user not found');
-
-    // .splice allows me to receive a position and indicate how many elements to remove from it.
-    this.users.splice(index, 1);
-
-    // Some APIs give a success message or id.
     return { id };
   }
 
+  async update(id, changes) {
+    return {
+      id,
+      changes,
+    };
+  }
+
+  async delete(id) {
+    return { id };
+  }
 }
 
-module.exports = UsersService;
+module.exports = UserService;

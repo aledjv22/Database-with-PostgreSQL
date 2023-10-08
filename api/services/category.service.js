@@ -13,7 +13,7 @@ class CategoriesService {
 
     for (let index = 0; index < limit; index++) {
       this.categories.push({
-        id: faker.datatype.uuid(),
+        id: faker.string.uuid(),
         categorie: faker.word.adjective(),
         isBlock: faker.datatype.boolean(),
       }
@@ -23,7 +23,7 @@ class CategoriesService {
 
   async create(data) {
     const newCategory = {
-      id: faker.datatype.uuid(),
+      id: faker.string.uuid(),
       ...data
     }
     this.categories.push(newCategory);
