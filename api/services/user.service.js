@@ -1,14 +1,12 @@
 const { faker } = require('@faker-js/faker');
 const boom = require('@hapi/boom');
-const pool = require('../libs/postgres');
+const sequelize = require('../libs/sequelize');
 
 class UsersService {
 
   constructor(){
     this.users = [];
     this.generate();
-    this.pool = pool;
-    this.pool.on('error', (err) => console.error(err));
   }
 
   generate() {
@@ -16,7 +14,7 @@ class UsersService {
 
     for (let index = 0; index < limit; index++) {
       this.users.push({
-        id: faker.datatype.uuid(),
+        id: faker.string.uuid(),
         user: faker.internet.userName(),
         isBlock: faker.datatype.boolean(),
       });
@@ -25,7 +23,7 @@ class UsersService {
 
   async create(data) {
     const newUser = {
-      id: faker.datatype.uuid(),
+      id: faker.string.uuid(),
       ...data
     }
     this.users.push(newUser);
@@ -35,9 +33,9 @@ class UsersService {
 
   async find() {
     const query = 'SELECT * FROM tasks';
-    const rta = await this.pool.query(query);
+    const [data] = await sequelize.query(query);
     
-    return rta.rows;
+    return data;
   }
 
   async findOne(id) {
