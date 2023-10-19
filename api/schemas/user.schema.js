@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 const id = Joi.string();
 const email = Joi.string().email();
-const password = Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'));
+const password = Joi.string();
 const createdAt = Joi.date();
 
 const createUserSchema = Joi.object({
