@@ -1,17 +1,20 @@
 const Joi = require('joi');
 
-const id = Joi.string().uuid();
-const user = Joi.string().min(3).max(15);
-const isBlock = Joi.boolean();
+const id = Joi.string();
+const email = Joi.string().email();
+const password = Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'));
+const createdAt = Joi.date();
 
 const createUserSchema = Joi.object({
-  user: user.required(),
-  isBlock: isBlock.required(),
+  email: email.required(),
+  password: password.required(),
+  createdAt: createdAt.required()
 });
 
 const updateUserSchema = Joi.object({
-  user: user,
-  isBlock: isBlock,
+  email: email,
+  password: password,
+  createdAt: createdAt
 });
 
 const getUserSchema = Joi.object({

@@ -1,17 +1,17 @@
 const Joi = require('joi');
 
-const id = Joi.string().uuid();
-const category = Joi.string().min(3).max(15);
-const isBlock = Joi.boolean();
+const id = Joi.string();
+const category = Joi.string().min(3); //.max(15);
+const createdAt = Joi.date();
 
 const createCategorySchema = Joi.object({
-  categorie: category.required(),
-  isBlock: isBlock.required(),
+  category: category.required(),
+  createdAt: createdAt.required()
 });
 
 const updateCategorySchema = Joi.object({
-  categorie: category,
-  isBlock: isBlock,
+  category: category,
+  createdAt: createdAt
 });
 
 const getCategorySchema = Joi.object({

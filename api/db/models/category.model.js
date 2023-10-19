@@ -9,7 +9,7 @@ const CategorySchema = {
     primaryKey: true,
     type: DataTypes.INTEGER
   },
-  title: {
+  category: {
     allowNull: false,
     type: DataTypes.STRING
   },
