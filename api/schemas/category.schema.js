@@ -6,7 +6,7 @@ const createdAt = Joi.date();
 
 const createCategorySchema = Joi.object({
   category: category.required(),
-  createdAt: createdAt.required()
+  createdAt: createdAt
 });
 
 const updateCategorySchema = Joi.object({
