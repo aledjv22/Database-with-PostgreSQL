@@ -39,7 +39,14 @@ const deleteProductSchema = Joi.object({
 
 const queryProductSchema = Joi.object({
   limit,
-  offset
+  offset,
+  price
 });
 
-module.exports = { createProductSchema, updateProductSchema, getProductSchema, deleteProductSchema, queryProductSchema }
+module.exports = { 
+  createProductSchema, 
+  updateProductSchema, 
+  getProductSchema, 
+  deleteProductSchema, 
+  queryProductSchema 
+}
