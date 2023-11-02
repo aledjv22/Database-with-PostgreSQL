@@ -3,9 +3,10 @@ const passport = require('passport');
 
 const ProductsService = require('../services/product.service');
 const validatorHandler = require('../middlewares/validator.handler');
-const { createProductSchema, 
-        updateProductSchema, 
-        getProductSchema, 
+const { checkRoles } = require('../middlewares/auth.handler');
+const { createProductSchema,
+        updateProductSchema,
+        getProductSchema,
         deleteProductSchema,
         queryProductSchema
       } = require('../schemas/product.schema');
@@ -13,12 +14,12 @@ const { createProductSchema,
 const router = express.Router();
 const service = new ProductsService();
 
-router.get('/', 
+router.get('/',
   validatorHandler(queryProductSchema, 'query'),
   async (req, res, next) => {
     try {
       const products = await service.find(req.query);
-    
+
       res.json(products);
     } catch (error) {
       next(error);
@@ -26,7 +27,7 @@ router.get('/',
   }
 );
 
-// Specific endpoints must come before the dynamic  
+// Specific endpoints must come before the dynamic
 // ones, that's why /filter comes before :id
 router.get('/filter', (req, res) => {
   res.send('I am a filter');
@@ -45,8 +46,9 @@ router.get('/:id',
     }
 });
 
-router.post('/', 
+router.post('/',
   passport.authenticate('jwt', {session: false}),
+  checkRoles('admin', 'seller'),
   validatorHandler(createProductSchema, 'body'),
   async (req, res, next) => {
     try {
@@ -59,8 +61,9 @@ router.post('/',
     }
 });
 
-router.patch('/:id', 
+router.patch('/:id',
   passport.authenticate('jwt', {session: false}),
+  checkRoles('admin', 'seller'),
   validatorHandler(getProductSchema, 'params'),
   validatorHandler(updateProductSchema, 'body'),
   async (req, res, next) => {
@@ -75,8 +78,9 @@ router.patch('/:id',
     }
 });
 
-router.delete('/:id', 
+router.delete('/:id',
   passport.authenticate('jwt', {session: false}),
+  checkRoles('admin', 'seller'),
   validatorHandler(deleteProductSchema, 'params'),
   async (req, res, next) => {
     try {
