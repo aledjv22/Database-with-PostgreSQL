@@ -13,13 +13,19 @@ const { createUserSchema,
 const router = express.Router();
 const service = new UsersService();
 
-router.get('/', async  (req, res) => {
-  const users = await service.find();
+router.get('/', 
+  passport.authenticate('jwt', {session: false}),
+  checkRoles('admin'),
+  async  (req, res) => {
+    const users = await service.find();
 
-  res.json(users);
-});
+    res.json(users);
+  }
+);
 
 router.get('/:id',
+  passport.authenticate('jwt', {session: false}),
+  checkRoles('admin'),
   validatorHandler(getUserSchema, 'params'),
   async (req, res, next) => {
     try {

@@ -10,6 +10,7 @@ class UsersService {
       password: hash
     });
     delete newUser.dataValues.password;
+    delete newUser.dataValues.recoveryToken;
 
     return newUser;
   }
@@ -35,6 +36,8 @@ class UsersService {
     
     if (!user)
       throw boom.notFound('User not found');
+
+    delete user.dataValues.recoveryToken;
 
     return user;
   }
