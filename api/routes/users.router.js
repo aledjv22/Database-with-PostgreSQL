@@ -33,8 +33,6 @@ router.get('/:id',
 });
 
 router.post('/',
-  passport.authenticate('jwt', {session: false}),
-  checkRoles('admin', 'seller'),
   validatorHandler(createUserSchema, 'body'),
   async (req, res, next) => {
     try {
