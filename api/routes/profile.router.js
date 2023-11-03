@@ -6,7 +6,7 @@ const OrderService = require('../services/order.service');
 const router = express.Router();
 const service = new OrderService();
 
-router.post('/my-orders',
+router.get('/my-orders',
   passport.authenticate('jwt', {session: false}),
   async (req, res, next) => {
     try {
