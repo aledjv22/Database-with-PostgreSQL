@@ -46,6 +46,10 @@ class AuthService {
       throw boom.unauthorized();
     }
 
+    jwt.verify(user.recoveryToken, config.jwtSecret, (err) => {
+      if (!err) throw boom.badRequest('You already have a active token.');
+    });
+
     const payload = { sub: user.id };
     const token = jwt.sign(payload, config.jwtSecret, {expiresIn: '15min'});
     const link = `http://myfrontend.com/recovery?token=${token}`;
